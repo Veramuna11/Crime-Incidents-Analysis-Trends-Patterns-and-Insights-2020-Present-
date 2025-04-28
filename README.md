@@ -147,6 +147,236 @@ This project focuses on analyzing crime incidents reported from 2020 to the pres
 
 ---
 
+## Data Analysis
+**Import neccessay Labraries**
+```Python
+
+# Step 1: Import Libraries
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Ignore warnings for cleaner output
+import warnings
+warnings.filterwarnings('ignore')
+
+# Display settings
+pd.set_option('display.max_columns', None)
+,,,
+
+## **Loading of the Dataset**
+```Python
+
+# Load the CSV file
+df = pd.read_csv('Crime_Data_from_2020_to_Present.csv')
+
+# Display the first 5 rows to inspect
+df.head()
+,,,
+
+**Check for Missing Values**
+```Python
+missing_values = df.isnull().sum()
+print("\nMissing values per column:")
+print(missing_values)
+,,,
+
+**Drop Columns**
+```Python
+# Drop the specified columns
+columns_to_drop = ['Crm Cd 2', 'Crm Cd 3', 'Crm Cd 4']
+df.drop(columns=columns_to_drop, axis=1, inplace=True)
+
+# Check to confirm
+df.head()
+,,,
+
+**Check for missing values**
+```Python
+# Show missing values
+print(df.isnull().sum())
+
+# Remove rows with missing values
+df.dropna(inplace=True)
+
+# Confirm no more missing values
+print(df.isnull().sum())
+,,,
+
+**Remove Duplicate Rows**
+```Python
+# Check duplicates
+print(f"Duplicate rows before removal: {df.duplicated().sum()}")
+
+# Remove duplicates
+df.drop_duplicates(inplace=True)
+
+# Confirm
+print(f"Duplicate rows after removal: {df.duplicated().sum()}")
+,,,
+
+**Remove Outliers (Numerical Columns Only)**
+,,, Phyton
+
+# Select numeric columns
+numeric_cols = df.select_dtypes(include=np.number).columns
+
+# Remove outliers for each numeric column
+for col in numeric_cols:
+    Q1 = df[col].quantile(0.25)
+    Q3 = df[col].quantile(0.75)
+    IQR = Q3 - Q1
+    lower_bound = Q1 - 1.5 * IQR
+    upper_bound = Q3 + 1.5 * IQR
+    df = df[(df[col] >= lower_bound) & (df[col] <= upper_bound)]
+
+# Confirm after outlier removal
+df.shape
+,,,
+
+**Convert Data Types**
+```Python
+# Check data types
+print(df.dtypes)
+
+# If there is a column like 'DATE OCC', convert it to datetime
+if 'DATE OCC' in df.columns:
+    df['DATE OCC'] = pd.to_datetime(df['DATE OCC'], errors='coerce')
+
+# Confirm
+print(df.dtypes)
+,,,
+
+**Convert Data Types**
+```Python
+
+import random
+
+# Define a function to replace 'X' or 'H' randomly with 'M' or 'F'
+def replace_with_random(value):
+    if value in ['X', 'H']:
+        return random.choice(['M', 'F'])
+    else:
+        return value
+
+# Apply the function to Vict Sex column
+df['Vict Sex'] = df['Vict Sex'].apply(replace_with_random)
+
+# Check the unique values to confirm
+print(df['Vict Sex'].unique())
+,,,
+
+**EDA - Exploratory Data Analysis**
+**Top 10 Most Frequent Crime Types**
+```Python
+
+# Top 10 Crime Types
+top_crimes = df['Crm Cd Desc'].value_counts().head(10)
+
+# Plot
+plt.figure(figsize=(10,6))
+sns.barplot(x=top_crimes.values, y=top_crimes.index)
+plt.title('Top 10 Most Frequent Crime Types')
+plt.xlabel('Number of Incidents')
+plt.ylabel('Crime Type')
+plt.tight_layout()
+plt.savefig('top_10_crimes.png')  # Save visual
+plt.show()
+,,,
+
+**Areas (Districts) with the Highest Crime Rates**
+```Python
+
+# Top Crime Areas
+top_areas = df['AREA NAME'].value_counts().head(10)
+
+# Plot
+plt.figure(figsize=(10,6))
+sns.barplot(x=top_areas.values, y=top_areas.index)
+plt.title('Top 10 Areas with Highest Crime')
+plt.xlabel('Number of Incidents')
+plt.ylabel('Area Name')
+plt.tight_layout()
+plt.savefig('top_areas_crime.png')  # Save visual
+plt.show()
+,,,
+
+**Peak Months and Times when Most Crimes Occur**
+```Python
+
+# Convert DATE OCC to datetime if not already
+df['DATE OCC'] = pd.to_datetime(df['DATE OCC'])
+
+# Extract Month
+df['Month'] = df['DATE OCC'].dt.month
+
+# Crime by Month
+crime_by_month = df['Month'].value_counts().sort_index()
+
+# Plot
+plt.figure(figsize=(10,6))
+sns.lineplot(x=crime_by_month.index, y=crime_by_month.values, marker='o')
+plt.title('Crimes Per Month')
+plt.xlabel('Month')
+plt.ylabel('Number of Incidents')
+plt.xticks(range(1,13))
+plt.tight_layout()
+plt.savefig('crimes_per_month.png')  # Save visual
+plt.show()
+,,,
+
+
+**Victim Age and Gender Distribution across Crime Types**
+**Victim Age Distribution**
+```Python
+
+# Victim Age Distribution
+plt.figure(figsize=(10,6))
+sns.histplot(df['Vict Age'], bins=30, kde=True)
+plt.title('Victim Age Distribution')
+plt.xlabel('Age')
+plt.ylabel('Number of Victims')
+plt.tight_layout()
+plt.savefig('victim_age_distribution.png')
+plt.show()
+,,, 
+
+**Victim Age and Gender Distribution across Crime Types**
+**Victim Gender Distribution**
+```Python
+
+# Victim Gender
+gender_counts = df['Vict Sex'].value_counts()
+
+plt.figure(figsize=(6,6))
+sns.barplot(x=gender_counts.index, y=gender_counts.values)
+plt.title('Victim Gender Distribution')
+plt.xlabel('Gender')
+plt.ylabel('Number of Victims')
+plt.tight_layout()
+plt.savefig('victim_gender_distribution.png')
+plt.show()
+,,,
+
+**Most Commonly Used Weapons**
+```Python
+
+# Top Weapons Used
+top_weapons = df['Weapon Desc'].value_counts().head(10)
+
+# Plot
+plt.figure(figsize=(10,6))
+sns.barplot(x=top_weapons.values, y=top_weapons.index)
+plt.title('Top 10 Weapons Used in Crimes')
+plt.xlabel('Number of Incidents')
+plt.ylabel('Weapon Type')
+plt.tight_layout()
+plt.savefig('top_weapons_used.png')
+plt.show()
+,,,
+
 
 ## 🧠 Key Findings
 - Crime incidents peak during the early months of the year (January to March).
