@@ -22,6 +22,8 @@
 - [Key Findings](#key-findings)
 - [Decision-Making Insights](#decision-making-insights)
 - [Tableau Dashboard](#tableau-dashboard)
+- [Conclusion](#conclusion)
+- [Recommendations](#recommendations)
 - [Future Work and Next Steps](#future-work-and-next-steps)
 
 
@@ -149,22 +151,19 @@ This project focuses on analyzing crime incidents reported from 2020 to the pres
 
 ## Data Analysis
 **Import neccessay Labraries**
+
 ```Python
 
-# Step 1: Import Libraries
+## Import Libraries
 
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# Ignore warnings for cleaner output
-import warnings
-warnings.filterwarnings('ignore')
-
 # Display settings
 pd.set_option('display.max_columns', None)
-,,,
+```
 
 ## **Loading of the Dataset**
 ```Python
@@ -174,14 +173,14 @@ df = pd.read_csv('Crime_Data_from_2020_to_Present.csv')
 
 # Display the first 5 rows to inspect
 df.head()
-,,,
+```
 
 **Check for Missing Values**
 ```Python
 missing_values = df.isnull().sum()
 print("\nMissing values per column:")
 print(missing_values)
-,,,
+```
 
 **Drop Columns**
 ```Python
@@ -191,7 +190,7 @@ df.drop(columns=columns_to_drop, axis=1, inplace=True)
 
 # Check to confirm
 df.head()
-,,,
+```
 
 **Check for missing values**
 ```Python
@@ -203,7 +202,7 @@ df.dropna(inplace=True)
 
 # Confirm no more missing values
 print(df.isnull().sum())
-,,,
+```
 
 **Remove Duplicate Rows**
 ```Python
@@ -215,10 +214,10 @@ df.drop_duplicates(inplace=True)
 
 # Confirm
 print(f"Duplicate rows after removal: {df.duplicated().sum()}")
-,,,
+```
 
 **Remove Outliers (Numerical Columns Only)**
-,,, Phyton
+``` Phyton
 
 # Select numeric columns
 numeric_cols = df.select_dtypes(include=np.number).columns
@@ -234,7 +233,7 @@ for col in numeric_cols:
 
 # Confirm after outlier removal
 df.shape
-,,,
+```
 
 **Convert Data Types**
 ```Python
@@ -247,7 +246,7 @@ if 'DATE OCC' in df.columns:
 
 # Confirm
 print(df.dtypes)
-,,,
+```
 
 **Convert Data Types**
 ```Python
@@ -266,117 +265,7 @@ df['Vict Sex'] = df['Vict Sex'].apply(replace_with_random)
 
 # Check the unique values to confirm
 print(df['Vict Sex'].unique())
-,,,
-
-**EDA - Exploratory Data Analysis**
-**Top 10 Most Frequent Crime Types**
-```Python
-
-# Top 10 Crime Types
-top_crimes = df['Crm Cd Desc'].value_counts().head(10)
-
-# Plot
-plt.figure(figsize=(10,6))
-sns.barplot(x=top_crimes.values, y=top_crimes.index)
-plt.title('Top 10 Most Frequent Crime Types')
-plt.xlabel('Number of Incidents')
-plt.ylabel('Crime Type')
-plt.tight_layout()
-plt.savefig('top_10_crimes.png')  # Save visual
-plt.show()
-,,,
-
-**Areas (Districts) with the Highest Crime Rates**
-```Python
-
-# Top Crime Areas
-top_areas = df['AREA NAME'].value_counts().head(10)
-
-# Plot
-plt.figure(figsize=(10,6))
-sns.barplot(x=top_areas.values, y=top_areas.index)
-plt.title('Top 10 Areas with Highest Crime')
-plt.xlabel('Number of Incidents')
-plt.ylabel('Area Name')
-plt.tight_layout()
-plt.savefig('top_areas_crime.png')  # Save visual
-plt.show()
-,,,
-
-**Peak Months and Times when Most Crimes Occur**
-```Python
-
-# Convert DATE OCC to datetime if not already
-df['DATE OCC'] = pd.to_datetime(df['DATE OCC'])
-
-# Extract Month
-df['Month'] = df['DATE OCC'].dt.month
-
-# Crime by Month
-crime_by_month = df['Month'].value_counts().sort_index()
-
-# Plot
-plt.figure(figsize=(10,6))
-sns.lineplot(x=crime_by_month.index, y=crime_by_month.values, marker='o')
-plt.title('Crimes Per Month')
-plt.xlabel('Month')
-plt.ylabel('Number of Incidents')
-plt.xticks(range(1,13))
-plt.tight_layout()
-plt.savefig('crimes_per_month.png')  # Save visual
-plt.show()
-,,,
-
-
-**Victim Age and Gender Distribution across Crime Types**
-**Victim Age Distribution**
-```Python
-
-# Victim Age Distribution
-plt.figure(figsize=(10,6))
-sns.histplot(df['Vict Age'], bins=30, kde=True)
-plt.title('Victim Age Distribution')
-plt.xlabel('Age')
-plt.ylabel('Number of Victims')
-plt.tight_layout()
-plt.savefig('victim_age_distribution.png')
-plt.show()
-,,, 
-
-**Victim Age and Gender Distribution across Crime Types**
-**Victim Gender Distribution**
-```Python
-
-# Victim Gender
-gender_counts = df['Vict Sex'].value_counts()
-
-plt.figure(figsize=(6,6))
-sns.barplot(x=gender_counts.index, y=gender_counts.values)
-plt.title('Victim Gender Distribution')
-plt.xlabel('Gender')
-plt.ylabel('Number of Victims')
-plt.tight_layout()
-plt.savefig('victim_gender_distribution.png')
-plt.show()
-,,,
-
-**Most Commonly Used Weapons**
-```Python
-
-# Top Weapons Used
-top_weapons = df['Weapon Desc'].value_counts().head(10)
-
-# Plot
-plt.figure(figsize=(10,6))
-sns.barplot(x=top_weapons.values, y=top_weapons.index)
-plt.title('Top 10 Weapons Used in Crimes')
-plt.xlabel('Number of Incidents')
-plt.ylabel('Weapon Type')
-plt.tight_layout()
-plt.savefig('top_weapons_used.png')
-plt.show()
-,,,
-
+```
 
 ## 🧠 Key Findings
 - Crime incidents peak during the early months of the year (January to March).
@@ -387,18 +276,27 @@ plt.show()
 
 ---
 
-
- ## 📊 Tableau Dashboard
+## 📊 Tableau Dashboard 
 
 To further enhance interactivity, a Tableau dashboard was developed featuring:
 
-- Top 10 Crimes
-- Crime Trends by Month
-- Crime Hotspots by Area
-- Victim Age and Gender Distributions
-- Weapon Usage Patterns
+- KPI Overview
+- Top 10 Crime Types
+- Top Crime Areas
+- Crime Trends Over Time
+- Victim Age and Gender Distribution
+- Most Common Weapons Used
 
 ▶️ **[View Interactive Tableau Dashboard Here](your-tableau-public-link-here)**
+
+---
+
+## 🧠 Conclusion
+
+The analysis of Los Angeles crime data from 2020 to the present revealed distinct patterns and actionable insights. Crime incidents concentrate heavily at the start of the year, with assaults and robberies topping crime reports, especially in 77th Street and Southeast areas. Victims are largely young adults, and physical altercations are more common than armed confrontations. These findings guide targeted safety initiatives, strategic resource allocation, and public education campaigns.
+
+---
+
 
 ## 📖 Decision-Making Insights
 - Increase law enforcement deployment and community engagement between January and March to address seasonal crime spikes.
@@ -420,4 +318,15 @@ To further enhance interactivity, a Tableau dashboard was developed featuring:
 
 ---
 
+## 👤 Author
 
+Developed by **Ibemere Munachi Vera**, a passionate Data Analyst skilled in Python, SQL, Tableau, and Business Intelligence.  
+Dedicated to transforming data into actionable insights that drive smarter decision-making.
+
+- **LinkedIn**: Vera Ibemere
+- **GitHub**: [Your GitHub Profile Link]
+- **Portfolio**: [Optional Portfolio Website Link]
+
+Feel free to connect for collaborations or exciting data projects!
+
+---
