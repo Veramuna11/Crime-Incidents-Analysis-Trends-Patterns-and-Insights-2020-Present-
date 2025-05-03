@@ -324,8 +324,8 @@ Developed by **Ibemere Munachi Vera**, a passionate Data Analyst skilled in Pyth
 Dedicated to transforming data into actionable insights that drive smarter decision-making.
 
 - **LinkedIn**: Vera Ibemere
-- **GitHub**: [Your GitHub Profile Link]
-- **Portfolio**: [Optional Portfolio Website Link]
+- **GitHub**: [https://github.com/Veramuna11/Crime-Incidents-Analysis-Trends-Patterns-and-Insights-2020-Present-]
+
 
 Feel free to connect for collaborations or exciting data projects!
 
